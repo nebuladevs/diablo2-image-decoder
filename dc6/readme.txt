@@ -1,0 +1,1 @@
+put all .dc6 files you want extract here
