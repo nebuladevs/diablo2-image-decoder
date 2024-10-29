@@ -1,8 +1,14 @@
+import os
 import struct
 from PIL import Image
 
+OUTPUT_DIR = 'output/'
+DC6_DIR = 'dc6/'
+
 def read_dc6_header(file_path, palette_file):
-    with open(file_path, 'rb') as f:
+    file_name = file_path.split('.')[0]
+
+    with open(f"{DC6_DIR}{file_path}", 'rb') as f:
         header_data = f.read(24)
         
         version, dw_flags, e_format, pad_bytes, n_dirs, blockcount = struct.unpack('6i', header_data)
@@ -31,7 +37,7 @@ def read_dc6_header(file_path, palette_file):
                 break
             
             image = decode_image_data(image_data, palette, width, height)
-            image.save(f'block_{i}.png')
+            image.save(f'{OUTPUT_DIR}{file_name}_{i}.png')
 
 def load_palette(palette_file):
     with open(palette_file, 'rb') as f:
@@ -75,4 +81,9 @@ def decode_image_data(image_data, palette, width, height):
                 x += 1
     return pic
 
-read_dc6_header("hlthmana.dc6", 'pal.dat')
+def main():
+    dc6_files = os.listdir(DC6_DIR)
+    for dc6_file in dc6_files:
+        read_dc6_header(dc6_file, 'pal.dat')
+
+main()
