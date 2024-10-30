@@ -6,16 +6,19 @@ OUTPUT_DIR = 'output/'
 DC6_DIR = 'dc6/'
 
 def read_dc6_header(file_path, palette_file):
+    if ".dc6" not in file_path: return
+    
     file_name = file_path.split('.')[0]
-
+    
     with open(f"{DC6_DIR}{file_path}", 'rb') as f:
         header_data = f.read(24)
         
-        version, dw_flags, e_format, pad_bytes, n_dirs, blockcount = struct.unpack('6i', header_data)
-        print(f"version: {version}, dw_flags: {dw_flags}, e_format: {e_format}, n_dirs: {n_dirs}, blockcount: {blockcount}")
+        version, dw_flags, e_format, pad_bytes, n_dirs, block_count = struct.unpack('6i', header_data)
+        print(f"version: {version}, dw_flags: {dw_flags}, e_format: {e_format}, n_dirs: {n_dirs}, block_count: {block_count}")
 
         offsets = []
-        for _ in range(blockcount):
+        
+        for _ in range(block_count):
             offset = struct.unpack('i', f.read(4))[0]
             offsets.append(offset)
             
